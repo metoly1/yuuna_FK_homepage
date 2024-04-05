@@ -381,31 +381,42 @@ function playSound(soundPath) {
     audio.play();
 }
 
+let dragElementId; // グローバルスコープで変数を定義
+
 // ドラッグ開始時の処理
 function dragStart(e) {
     e.dataTransfer.setData('text/plain', null);
+    dragElementId = e.target.id; // グローバルスコープの変数に値を設定
 }
 
 // ドラッグオーバー時の処理
 function dragOver(e) {
     e.preventDefault();
+
+    const draggableNumber = parseInt(dragElementId.match(/\d+/)[0]); // droppable1-3の場合、1
+    const droppableNumber = parseInt(e.target.id.match(/\d+/)[0]); // droppable2-3の場合、2 
+
+    // draggableNumber が 1、2、3、4、5 でない場合、または draggableNumber と droppableNumber が異なる場合、ドロップを許可しない
+    if (draggableNumber !== droppableNumber) {
+        e.dataTransfer.dropEffect = 'none';
+    }
 }
+
+
+
 // ドラッグアンドドロップのセットアップ関数
 function setupDragAndDrop(draggable, droppables, circle, cross, seikaiSoundPath, hazureSoundPath) {
     draggable.addEventListener('dragstart', dragStart);
-
-    // draggable の id から数字を抽出
-    const draggableNumber = parseInt(draggable.id.match(/\d+/)[0]);
-
     droppables.forEach(droppable => {
         droppable.addEventListener('dragover', dragOver);
         droppable.addEventListener('drop', function(e) {
-            // ドロップ処理の関数を呼び出す前に、条件をチェック
-            const droppableId = droppable.id;
-            const droppableNumber = parseInt(droppableId.match(/\d+/)[0]);
+
+             // ドロップ処理の関数を呼び出す前に、条件をチェック
+            const draggableNumber = parseInt(draggable.id.match(/\d+/)[0]);//droppable1-3の場合、1
+            const droppableNumber = parseInt(droppable.id.match(/\d+/)[0]); //droppable2-3の場合、2 
 
             // draggable と droppable の数字が一致した場合のみ処理を実行
-            if (draggableNumber === droppableNumber) {
+            if (draggableNumber == droppableNumber) {
                 switch (draggableNumber) {
                     case 1:
                         drop1(e, circle, cross, seikaiSoundPath, hazureSoundPath);
@@ -423,107 +434,58 @@ function setupDragAndDrop(draggable, droppables, circle, cross, seikaiSoundPath,
                         drop5(e, circle, cross, seikaiSoundPath, hazureSoundPath);
                         break;
                     default:
-                        console.log('該当する処理がありません');
                         break;
                 }
+            } else {
+                // draggable と droppable の数字が一致しない場合の処理
+                playSound(seikaiSoundPath);
+                playSound(hazureSoundPath);
             }
         });
     });
 }
 
+
+
 // ドロップ1の処理
 function drop1(e, circle, cross, seikaiSoundPath, hazureSoundPath) {
-    e.preventDefault();
-    const data = e.dataTransfer.getData('text/plain');
-    if (e.target.id === 'droppable1-2') {
-        e.target.appendChild(draggable1);
-        draggable1.classList.add('dropped');
-        circle.style.display = 'inline';
-        playSound(seikaiSoundPath);
-        draggable1.setAttribute('draggable', 'false');
-    } else {
-        e.target.appendChild(draggable1);
-        draggable1.classList.add('dropped');
-        cross.style.display = 'inline';
-        playSound(hazureSoundPath)
-        draggable1.setAttribute('draggable', 'false');
-    }
+    drop(e, draggable1, circle, cross, seikaiSoundPath, hazureSoundPath, 'droppable1-2');
 }
 
 // ドロップ2の処理
 function drop2(e, circle, cross, seikaiSoundPath, hazureSoundPath) {
-    e.preventDefault();
-    const data = e.dataTransfer.getData('text/plain');
-    if (e.target.id === 'droppable2-4') {
-        e.target.appendChild(draggable2);
-        draggable2.classList.add('dropped');
-        circle.style.display = 'inline';
-        playSound(seikaiSoundPath);
-        draggable2.setAttribute('draggable', 'false');
-    } else {
-        e.target.appendChild(draggable2);
-        draggable2.classList.add('dropped');
-        cross.style.display = 'inline';
-        playSound(hazureSoundPath)
-        draggable2.setAttribute('draggable', 'false');
-    }
+    drop(e, draggable2, circle, cross, seikaiSoundPath, hazureSoundPath, 'droppable2-4');
 }
 
 // ドロップ3の処理
 function drop3(e, circle, cross, seikaiSoundPath, hazureSoundPath) {
-    e.preventDefault();
-    const data = e.dataTransfer.getData('text/plain');
-    if (e.target.id === 'droppable3-1') {
-        e.target.appendChild(draggable3);
-        draggable3.classList.add('dropped');
-        circle.style.display = 'inline';
-        playSound(seikaiSoundPath);
-        draggable3.setAttribute('draggable', 'false');
-    } else {
-        e.target.appendChild(draggable3);
-        draggable3.classList.add('dropped');
-        cross.style.display = 'inline';
-        playSound(hazureSoundPath)
-        draggable3.setAttribute('draggable', 'false');
-    }
+    drop(e, draggable3, circle, cross, seikaiSoundPath, hazureSoundPath, 'droppable3-1');
 }
 
 // ドロップ4の処理
 function drop4(e, circle, cross, seikaiSoundPath, hazureSoundPath) {
-    e.preventDefault();
-    const data = e.dataTransfer.getData('text/plain');
-    if (e.target.id === 'droppable4-5') {
-        e.target.appendChild(draggable4);
-        draggable4.classList.add('dropped');
-        circle.style.display = 'inline';
-        playSound(seikaiSoundPath);
-        draggable4.setAttribute('draggable', 'false');
-    } else {
-        e.target.appendChild(draggable4);
-        draggable4.classList.add('dropped');
-        cross.style.display = 'inline';
-        playSound(hazureSoundPath)
-        draggable4.setAttribute('draggable', 'false');
-    }
+    drop(e, draggable4, circle, cross, seikaiSoundPath, hazureSoundPath, 'droppable4-5');
 }
 
 // ドロップ5の処理
 function drop5(e, circle, cross, seikaiSoundPath, hazureSoundPath) {
-    e.preventDefault();
-    const data = e.dataTransfer.getData('text/plain');
-    if (e.target.id === 'droppable5-3') {
-        e.target.appendChild(draggable5);
-        draggable5.classList.add('dropped');
+    drop(e, draggable5, circle, cross, seikaiSoundPath, hazureSoundPath, 'droppable5-3');
+}
+
+function drop(e, draggable, circle, cross, seikaiSoundPath, hazureSoundPath, correctDroppableId) {
+
+    if (e.target.id === correctDroppableId) {
+        e.target.appendChild(draggable);
+        draggable.classList.add('dropped');
         circle.style.display = 'inline';
         playSound(seikaiSoundPath);
-        draggable5.setAttribute('draggable', 'false');
     } else {
-        e.target.appendChild(draggable5);
-        draggable5.classList.add('dropped');
+        e.target.appendChild(draggable);
+        draggable.classList.add('dropped');
         cross.style.display = 'inline';
-        playSound(hazureSoundPath)
-        draggable5.setAttribute('draggable', 'false');
+        playSound(hazureSoundPath);
     }
+    draggable.setAttribute('draggable', 'false');
 }
 
 // リセットボタンのセットアップ関数
