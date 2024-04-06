@@ -362,6 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const hazureAudio = new Audio();
     hazureAudio.src = hazureSoundPath;  
     hazureAudio.preload = 'auto';
+    
 
     for (let i = 1; i <= 5; i++) {
         const draggable = document.getElementById(`draggable${i}`);
@@ -375,15 +376,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// サウンドを再生する関数
-function playSound(soundPath) {
-    const audio = new Audio(soundPath);
-    audio.play();
-}
 
 // ドラッグ開始時の処理
 function dragStart(e) {
     e.dataTransfer.setData('text/plain', null);
+    dragElementId = e.target.id; // グローバルスコープの変数に値を設定
 }
 
 // ドラッグオーバー時の処理
@@ -393,16 +390,16 @@ function dragOver(e) {
 // ドラッグアンドドロップのセットアップ関数
 function setupDragAndDrop(draggable, droppables, circle, cross, seikaiSoundPath, hazureSoundPath) {
     draggable.addEventListener('dragstart', dragStart);
+   
 
-    // draggable の id から数字を抽出
-    const draggableNumber = parseInt(draggable.id.match(/\d+/)[0]);
-
-    droppables.forEach(droppable => {
+    droppables.forEach(droppable => { console.log(droppable.id, draggable.id);
         droppable.addEventListener('dragover', dragOver);
         droppable.addEventListener('drop', function(e) {
             // ドロップ処理の関数を呼び出す前に、条件をチェック
             const droppableId = droppable.id;
             const droppableNumber = parseInt(droppableId.match(/\d+/)[0]);
+            const draggableNumber = parseInt(dragElementId.match(/\d+/)[0]);
+
 
             // draggable と droppable の数字が一致した場合のみ処理を実行
             if (draggableNumber === droppableNumber) {
