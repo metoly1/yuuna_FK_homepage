@@ -1,49 +1,11 @@
-draggable１がdroppable１-２にドロップされたときは⭕、それ以外は❌
-draggable２がdroppable２-４にドロップされたときは⭕、それ以外は❌
-draggable３がdroppable３-１にドロップされたときは⭕、それ以外は❌
-draggable４がdroppable４-５にドロップされたときは⭕、それ以外は❌
-draggable５がdroppable５-３にドロップされたときは⭕、それ以外は❌
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@Yuuna_FK">
+    <meta name="twitter:creator" content="@Yuuna_FK">
+    <meta name="twitter:title" content="HeadRedFishEatingCat">
+    <meta name="twitter:description" content="頭が赤い魚を食べる猫のゲームです">
+    <meta name="twitter:image" content="HeadRedFishEatingCat_og.jpg">
 
-            this.appendChild(draggable);
-            draggable.classList.add('dropped');
-            // ドロップ２の場合はdroppable2-4の時に// 正しい場所にドロップされた場合
-// ドロップ３はdroppable３-１の時に// 正しい場所にドロップされた場合
-// ドロップ４はdroppable４-５の時に// 正しい場所にドロップされた場合
-// ドロップ５はdroppable５-３の時に// 正しい場所にドロップされた場合
-という処理を加えたい
-では//ドロップ１しか設定されていないが
-//ドロップ２～５まで作る
-
-そして、//ドロップ１ではid= draggable1とdroppable1-1,droppable1-2,droppable1-3,droppable1-4,droppable1-5しか扱わないように宣言し、
-
-//ドロップ２ではid= draggable２とdroppable2-1,droppable2-2,droppable2-3,droppable2-4,droppable2-5しか扱わないように宣言、
-３－５でも同様にする
-
-そして、//ドロップ１ではid= draggable1が`droppable1-2`に// 正しい場所にドロップされた場合
-// ドロップ２の場合はdroppable2-4の時に// 正しい場所にドロップされた場合
-// ドロップ３はdroppable３-１の時に// 正しい場所にドロップされた場合
-// ドロップ４はdroppable４-５の時に// 正しい場所にドロップされた場合
-// ドロップ５はdroppable５-３の時に// 正しい場所にドロップされた場合
-という処理を加えたい
-
-
-        // ドロップ１の処理
-        function handleDrop(e, draggable, circle, cross, seikaiSoundPath, hazureSoundPath) {
-            e.preventDefault();
-            const droppableId = this.id;
-            const draggableId = draggable.id;
-            
-            if (droppableId === `droppable1-2`) {
-                // 正しい場所にドロップされた場合
-                circle.style.display = 'block'; // ⭕ を表示
-                cross.style.display = 'none';   // ❌ を非表示
-                playSound(seikaiSoundPath);     // 正解の音を再生
-            } else {
-                // 間違った場所にドロップされた場合
-                circle.style.display = 'none';   // ⭕ を非表示
-                cross.style.display = 'block';  // ❌ を表示
-                playSound(hazureSoundPath);      // 失敗の音を再生
-            }
-            this.appendChild(draggable);
-            draggable.classList.add('dropped');
-        }
+        <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="picture/HeadRedFishEatingCat_og.jpg">
+    <meta property="og:url" content="https://www.yuuna.cat/HeadRedFishEatingCat.html">

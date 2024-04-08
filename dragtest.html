@@ -11,21 +11,28 @@
     <meta property="og:url" content="https://www.yuuna.cat/HeadRedFishEatingCat.html">
 
     <style>
-  
-
+        .HRFEC1,
+        .HRFEC2,
+        .HRFEC3,
+        .HRFEC4,
+        .HRFEC5 {
+            margin-right: 0.2em; /* 右側に隙間を設定 */
+            margin-bottom: 0.3em; /* 下側に隙間を設定 */
+        }
         body {
             font-family: "01プロップデザイン", sans-serif; 
             margin-top: 2em;
             font-size: 1.3em;
-            margin-left: 4em;
+            margin-left: 10%;
         }
         header {
             font-size: 0.8em;
             margin-left: 0.8em;
             margin-bottom: 3em;
             border-bottom: 1px dashed #ccc;
-            margin-right: 15em
+            white-space: nowrap;
         }
+
         p {
             margin-top: -0.5em;
             font-size: 1.1em;
@@ -144,6 +151,7 @@
             flex-wrap: wrap; /* コンテナ内の要素が折り返されるようにする */
             align-items: flex-start; /* 開始位置（上端）に寄せる */
             justify-content: flex-start;
+            margin-right: -90%;
         }
         .HRFEC1,
         .HRFEC2,
@@ -163,6 +171,9 @@
         .dropped:active{
             cursor: default;    
         }
+        .dragging {
+            opacity: 0.5; /* 半透明にする */
+            }
         .hint {
             display: none; 
         }
@@ -228,6 +239,7 @@
         </div>
         <div class="draggable-container" id="draggable-container1">
                 <span class=darggable id="draggable1" draggable="true">🐈</span>
+                <span class="placeholder" id="placeholder1"></span>
                 <span class="Judgment">
                     <span class="circle" id="circle1">⭕</span> 
                     <span class="cross" id="cross1">❌</span>
@@ -550,15 +562,15 @@ const seikaiSoundPath = 'sound/seikai.mp3';
 const hazureSoundPath = 'sound/hazure.mp3';
 const nyanFiles = Array.from({ length: 6 }, (_, i) => `sound/nyan${i + 1}.mp3`);
 let dragElementId = "draggable0";
-
-
+const soundPaths = [seikaiSoundPath, hazureSoundPath, resetSoundPath, openSoundPath, closeSoundPath, ...nyanFiles];
+const audioElements = soundPaths.map(path => new Audio(path));
 
 // ページ読み込み時の処理
-document.addEventListener('DOMContentLoaded', function() {
-    const soundPaths = [seikaiSoundPath, hazureSoundPath, resetSoundPath, openSoundPath, closeSoundPath, ...nyanFiles];
-    const audioElements = soundPaths.map(path => new Audio(path));
-    // プリロードしたオーディオ要素を保持する
+document.addEventListener('DOMContentLoaded', function() {    
+        // プリロードしたオーディオ要素を保持する
     audioElements.forEach(audio => audio.load());
+
+
 
     for (let i = 1; i <= 5; i++) {
         const draggable = document.getElementById(`draggable${i}`);
@@ -576,71 +588,90 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// サウンドを再生する関数
 function playSound(soundPath, volume = 0.3) {
-    const audio = new Audio(soundPath);
-    audio.volume = volume; 
-    audio.play();
+    const audioElement = audioElements.find(audio => audio.src.endsWith(soundPath));
+    if (audioElement) {
+        audioElement.volume = volume;
+        audioElement.currentTime = 0; // 再生位置を先頭に戻す
+        audioElement.play();
+    } else {
+        console.error(`Audio file not found: ${soundPath}`);
+    }
 }
 
 
 // ドラッグ開始時の処理
-function dragStart(e) {
-    dragElementId = e.target.id; // グローバルスコープの変数に値を設定
-    console.log(e.target.id);
+function touchStart(e) {
+    dragElementId = e.target.id;
 
-    // nyanファイルのパスをランダムに選択
     const randomIndex = Math.floor(Math.random() * nyanFiles.length);
     const randomNyanFile = nyanFiles[randomIndex];
+    playSound(randomNyanFile);
 
-    // 選択したnyanファイルを再生
-    playSound(randomNyanFile)
 }
+
 
 // ドラッグオーバー時の処理
-function dragOver(e) {
+function touchMove(e) {
     e.preventDefault();
+    
+    // ドラッグ中のアイテムをカーソルの位置に追従
+    var touch = event.changedTouches[0];
+    event.target.style.position = "fixed";
+    event.target.style.top = (touch.pageY - window.pageYOffset - event.target.offsetHeight / 2) + "px";
+    event.target.style.left = (touch.pageX - window.pageXOffset - event.target.offsetWidth / 2) + "px";
 }
+
 
 // ドラッグアンドドロップのセットアップ関数
 function setupDragAndDrop(draggable, droppables, circle, cross) {
-    draggable.addEventListener('dragstart', dragStart);
-    draggable.addEventListener('dragover', dragOver);
-    draggable.addEventListener('drop', (e) => {
-            e.preventDefault(); 
-            const draggableNumber = parseInt(dragElementId.match(/\d+/)[0]);
-            const droppableNumber = parseInt(droppable.id.match(/\d+/)[0]);
-            console.log(draggableNumber, droppableNumber)
-
-            if (draggableNumber === droppableNumber) {
-                const correctDroppableId = `droppable${draggableNumber}-${draggableNumber === 1 ? 2 : draggableNumber === 2 ? 4 : draggableNumber === 3 ? 1 : draggableNumber === 4 ? 5 : 3}`;
-                drop(e, draggable, circle, cross, correctDroppableId);//条件式 ? 真の場合の値 : 偽の場合の値
-            }
-        });
-    }
-    
-function drop(e, draggable, circle, cross, correctDroppableId) {
-    const droppableId = e.target.id;
-    const isCorrect = droppableId === correctDroppableId;
-
-    e.target.appendChild(draggable);
-    draggable.classList.add('dropped');
-    circle.style.display = isCorrect ? 'block' : 'none';
-    cross.style.display = isCorrect ? 'none' : 'block';
-
-    playSound(isCorrect ? seikaiSoundPath : hazureSoundPath);
-    draggable.setAttribute('draggable', 'false');
-    dragElementId = "draggable0";
+    draggable.addEventListener('touchstart', touchStart, false);
+    draggable.addEventListener('touchmove', touchMove, false);
+    draggable.addEventListener('touchend', touchEnd, false);
 }
+
+// ドロップ時の処理
+function touchEnd(e) {
+    const dropzone = document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+    const draggableNumber = parseInt(dragElementId.match(/\d+/)[0]);
+    const droppableNumber = parseInt(dropzone.id.match(/\d+/)[0]);  
+    const correctNumbers = [2, 4, 1, 5, 3];
+    const correctNumber = correctNumbers[draggableNumber - 1];
+    const secondDropzoneId = parseInt(dropzone.id.split('-')[1]);
+
+    if (dropzone && dropzone.classList.contains('fish')) {
+    
+    // ドラッグアンドドロップされた要素の番号とドロップゾーンの番号が一致した場合
+    if (draggableNumber === droppableNumber) {
+        if (secondDropzoneId === correctNumber) {
+            playSound(seikaiSoundPath);
+            document.getElementById(`circle${draggableNumber}`).style.display = 'block';
+            } 
+        else{
+            playSound(hazureSoundPath);
+            document.getElementById(`cross${draggableNumber}`).style.display = 'block';
+
+        }
+        dropzone.appendChild(event.target); 
+        event.target.classList.add('dropped');
+        event.target.removeEventListener('touchmove', touchMove);
+    }
+}
+
+    // ドラッグ中の操作のために変更していたスタイルを元に戻す
+    event.target.style.position = "";
+    event.target.style.top = "";
+    event.target.style.left = "";
+}
+
 
 // リセットボタンのセットアップ関数
 function setupResetButton(resetButton, draggable, draggable_container,circle, cross) {
     resetButton.addEventListener('click', function() {
 
         draggable.classList.remove('dropped');
-
         draggable_container.appendChild(draggable)
-        draggable.setAttribute('draggable', 'true');
+        draggable.addEventListener('touchmove', touchMove, false);
         circle.style.display = 'none';
         cross.style.display = 'none';
         playSound(resetSoundPath)
@@ -683,3 +714,4 @@ function setupHintButton(hint, hintButton) {
 </footer>
 
 </html>
+    
