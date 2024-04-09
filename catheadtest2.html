@@ -6,11 +6,12 @@
     <title>HeadRedFishEatingCat</title>
     <link rel="icon" href="picture/favicon.ico" type="image/x-icon">
     <meta property="og:title" content="HeadRedFishEatingCat">
-    <meta property="og:description" content="頭が赤い魚を食べるの猫ゲームです">
+    <meta property="og:description" content="頭が赤い魚を食べる猫のゲームです">
     <meta property="og:image" content="https://raw.githubusercontent.com/metoly1/yuuna_FK_homepage/main/picture/HeadRedFishEatingCat_og.jpg">
     <meta property="og:url" content="https://www.yuuna.cat/HeadRedFishEatingCat.html">
 
     <style>
+        
   
 
         body {
@@ -549,15 +550,14 @@ const resetSoundPath = 'sound/reset.mp3';
 const seikaiSoundPath = 'sound/seikai.mp3';
 const hazureSoundPath = 'sound/hazure.mp3';
 const nyanFiles = Array.from({ length: 6 }, (_, i) => `sound/nyan${i + 1}.mp3`);
+const soundPaths = [seikaiSoundPath, hazureSoundPath, resetSoundPath, openSoundPath, closeSoundPath, ...nyanFiles];
+const audioElements = soundPaths.map(path => new Audio(path));
 let dragElementId = "draggable0";
 
 
 
 // ページ読み込み時の処理
 document.addEventListener('DOMContentLoaded', function() {
-    const soundPaths = [seikaiSoundPath, hazureSoundPath, resetSoundPath, openSoundPath, closeSoundPath, ...nyanFiles];
-    const audioElements = soundPaths.map(path => new Audio(path));
-    // プリロードしたオーディオ要素を保持する
     audioElements.forEach(audio => audio.load());
 
     for (let i = 1; i <= 5; i++) {
@@ -576,11 +576,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// サウンドを再生する関数
 function playSound(soundPath, volume = 0.3) {
-    const audio = new Audio(soundPath);
-    audio.volume = volume; 
-    audio.play();
+    const audioElement = audioElements.find(audio => audio.src.endsWith(soundPath));
+    if (audioElement) {
+        audioElement.volume = volume;
+        audioElement.currentTime = 0; // 再生位置を先頭に戻す
+        audioElement.play();
+    } else {
+        console.error(`Audio file not found: ${soundPath}`);
+    }
 }
 
 
@@ -602,12 +606,14 @@ function dragOver(e) {
     e.preventDefault();
 }
 
+
 // ドラッグアンドドロップのセットアップ関数
 function setupDragAndDrop(draggable, droppables, circle, cross) {
     draggable.addEventListener('dragstart', dragStart);
-    draggable.addEventListener('dragover', dragOver);
-    draggable.addEventListener('drop', (e) => {
-            e.preventDefault(); 
+
+    droppables.forEach(droppable => {
+        droppable.addEventListener('dragover', dragOver);
+        droppable.addEventListener('drop', (e) => {
             const draggableNumber = parseInt(dragElementId.match(/\d+/)[0]);
             const droppableNumber = parseInt(droppable.id.match(/\d+/)[0]);
             console.log(draggableNumber, droppableNumber)
@@ -617,8 +623,8 @@ function setupDragAndDrop(draggable, droppables, circle, cross) {
                 drop(e, draggable, circle, cross, correctDroppableId);//条件式 ? 真の場合の値 : 偽の場合の値
             }
         });
-    }
-    
+    });
+}
 function drop(e, draggable, circle, cross, correctDroppableId) {
     const droppableId = e.target.id;
     const isCorrect = droppableId === correctDroppableId;

@@ -6,49 +6,65 @@
     <title>HeadRedFishEatingCat</title>
     <link rel="icon" href="picture/favicon.ico" type="image/x-icon">
     <meta property="og:title" content="HeadRedFishEatingCat">
-    <meta property="og:description" content="頭が赤い魚を食べる猫のゲームです">
+    <meta property="og:description" content="頭が赤い魚を食べるの猫ゲームです">
     <meta property="og:image" content="https://raw.githubusercontent.com/metoly1/yuuna_FK_homepage/main/picture/HeadRedFishEatingCat_og.jpg">
     <meta property="og:url" content="https://www.yuuna.cat/HeadRedFishEatingCat.html">
 
     <style>
-  
-
         body {
             font-family: "01プロップデザイン", sans-serif; 
             margin-top: 2em;
             font-size: 1.3em;
-            margin-left: 4em;
+            margin-left: 10%;
         }
         header {
             font-size: 0.8em;
             margin-left: 0.8em;
-            margin-bottom: 3em;
+            white-space: nowrap;
+            position: relative;
+        }
+        header::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 3em; /* 上に移動するためにマイナス値を指定 */
+            width: 100%;
             border-bottom: 1px dashed #ccc;
-            margin-right: 15em
+        }
+        #playButton {
+            background-color: #4CAF50; /* 緑色の背景 */
+            border: none; /* 枠線を無効化 */
+            color: white; /* テキストを白色に */
+            padding: 15px 32px; /* 内側の余白 */
+            text-align: center; /* テキストを中央揃え */
+            text-decoration: none; /* 下線を無効化 */
+            display: inline-block; /* インライン要素として扱う */
+            font-size: 1.5em; /* フォントサイズ */
+            margin: 4px 2px; /* 外側の余白 */
+            cursor: pointer; /* カーソルをポインターに変更 */
+            border-radius: 8px; /* 角を丸く */
+            transition: background-color 0.3s ease; /* ホバー時のアニメーション */
+            position: relative;
+            top: -3.7em;
+            left: 18em;
         }
         p {
             margin-top: -0.5em;
             font-size: 1.1em;
             margin-left: 0.1em;
         }
+        .HRFEC {
+            margin-bottom: 2em;
+        }
+        .Questions {
+            display: none;
+            margin-bottom: 2em; 
+            margin-left: 1em;
+        }
         .Sentence {
             white-space: nowrap;
             margin-left: 0.8em; 
-        }
-        .Reset {
-            cursor: pointer;
-            position: absolute;
-            margin-left: 11em; 
-            margin-top: -0.19em;
-            font-size: 1.3em;
-        }
-        .HintButton {
-            cursor: pointer;
-            position: absolute;
-            margin-left: 13.2em; 
-            margin-top: -0.19em;
-            font-size: 1.3em;
-        }
+        }        
         #cat3 {
             margin-left: 10.36em; 
         }
@@ -109,49 +125,23 @@
         #fish4 {
             margin-left: -5.67em; 
         }
-
-        .HRFEC画像 {
-            width: 7em; 
-            border: 0.35em solid pink; 
-        }
-        .fish {
-            position: relative;
-            top: -6.3em; 
-            left: -7.57em; 
-            cursor: default; 
-        }
-        .circle {
-            display: none;
-        }
-        .cross {
-            display: none;
-        }
-        .dropped {
+        .Reset {
+            cursor: pointer;
             position: absolute;
-            top: 0;
-            left: 1.3em;
+            margin-left: 11em; 
+            margin-top: -0.19em;
+            font-size: 1.3em;
         }
-        .HRFEC {
-            margin-bottom: 2em; 
-            margin-left: 1em;
+        .HintButton {
+            cursor: pointer;
+            position: absolute;
+            margin-left: 13.2em; 
+            margin-top: -0.19em;
+            font-size: 1.3em;
         }
         .draggable-container {
             margin-top: 0.5em;
             margin-bottom: 0.5em; 
-        }
-        .Answer {
-            display: flex;
-            flex-wrap: wrap; /* コンテナ内の要素が折り返されるようにする */
-            align-items: flex-start; /* 開始位置（上端）に寄せる */
-            justify-content: flex-start;
-        }
-        .HRFEC1,
-        .HRFEC2,
-        .HRFEC3,
-        .HRFEC4,
-        .HRFEC5 {
-            margin-right: 0.2em; /* 右側に隙間を設定 */
-            margin-bottom: 0.3em; /* 下側に隙間を設定 */
         }
         .darggable {
             cursor: grab; /* マウスオーバー時のカーソルを指定 */
@@ -159,9 +149,14 @@
         .darggable:active {
             cursor: grabbing; /* ドラッグ中のカーソルを指定 */
         }
-        .dropped,
-        .dropped:active{
-            cursor: default;    
+        .darggableClone {
+            display: none;
+        }
+        .circle {
+            display: none;
+        }
+        .cross {
+            display: none;
         }
         .hint {
             display: none; 
@@ -191,9 +186,54 @@
             border-radius: 5px;
             overflow: auto; /* 追加 */
         }
+        @media (hover:hover){
+            .Answer {
+            display: flex;
+            flex-wrap: wrap; /* コンテナ内の要素が折り返されるようにする */
+            align-items: flex-start; /* 開始位置（上端）に寄せる */
+            justify-content: flex-start;
+            }
+        }
+        @media (hover:none){
+            .Answer {
+            display: flex;
+            flex-wrap: wrap; /* コンテナ内の要素が折り返されるようにする */
+            align-items: flex-start; /* 開始位置（上端）に寄せる */
+            justify-content: flex-start;
+            margin-right: -90%;
+            }
+        }
+        .HRFEC1,
+        .HRFEC2,
+        .HRFEC3,
+        .HRFEC4,
+        .HRFEC5 {
+            margin-right: 0.2em; /* 右側に隙間を設定 */
+            margin-bottom: 0.3em; /* 下側に隙間を設定 */
+        }
+        .HRFEC画像 {
+            width: 7em; 
+            border: 0.35em solid pink; 
+        }
+        .fish {
+            position: relative;
+            top: -6.3em; 
+            left: -7.57em; 
+            cursor: default; 
+        }
+        .dropped {
+            position: absolute;
+            top: 0;
+            left: 1.3em;
+            cursor: default;  
+        }
+        .dropped:active{
+            cursor: default;    
+        }       
         footer {
             font-size: 0.6em;
             margin-left: 0.8em;
+            margin-bottom: 20%;
         }
         .embedded-element {
             display: flex; 
@@ -203,278 +243,286 @@
         }
     </style>
 </head>
-<header>
-    <h1>頭が赤い魚を食べる猫ゲーム</h1>
-    <p>文章の意味を正しく表している絵の🐟に🐈を連れて行ってあげてください</p>
-    <p>🔄を押すとリセットされます</p>
-    <p>💡を押すとヒントが表示されます</p>
-</header>
 <body>
-    <div class="HRFEC">
-        <div class="Question" id="Question1">問1
-            <span class="Reset" id="ResetButton1">🔄</span> 
-            <span class="HintButton" id="HintButton1">💡</span> 
-            <span class="Sentence">
-                <span id="cat1">猫
-                    <span id="eating1">食べる
-                        <span id="fish1">魚を
-                            <span id="head1">頭が
-                                <span id="red1">赤い</span>
+    <header>
+        <h1>頭が赤い魚を食べる猫ゲーム</h1>
+        <p>文章の意味を正しく表している絵の🐟に🐈を連れて行ってあげてください　　</p>
+        <p>🔄を押すとリセットされます</p>
+        <p>💡を押すとヒントが表示されます</p>
+        <p>右の「Play」を押すとゲームが始まります</p>
+        <p style="font-size: 1em;">※このゲームは効果音が鳴ります</p>
+        <button id="playButton">Play</button>
+    </header>
+    <div class="Questions">
+        <div class="HRFEC">
+            <div class="Question" id="Question1">問1
+                <span class="Reset" id="ResetButton1">🔄</span> 
+                <span class="HintButton" id="HintButton1">💡</span> 
+                <span class="Sentence">
+                    <span id="cat1">猫
+                        <span id="eating1">食べる
+                            <span id="fish1">魚を
+                                <span id="head1">頭が
+                                    <span id="red1">赤い</span>
+                                </span>
                             </span>
                         </span>
                     </span>
                 </span>
-            </span>
+            </div>
+            <div class="draggable-container" id="draggable-container1">
+                    <span class=darggable id="draggable1" draggable="true">🐈</span>
+                    <span class=darggableClone id="Clone1">🐈</span>
+                    <span class="Judgment">
+                        <span class="circle" id="circle1">⭕</span> 
+                        <span class="cross" id="cross1">❌</span>
+                    </span>   
+            </div>
+            <div class="hint" id="hint1">
+                <div class="code-editor">
+                    <div class="code-editor-header">hint1</div>
+                    <div class="code-editor-content">
+                        <div class="code">
+                            <code><pre>
+    &lt;div class="Sentence"&gt;
+        &lt;span id="cat1"&gt;猫
+            &lt;span id="eating1"&gt;食べる       
+                &lt;span id="fish1"&gt;魚を
+                    &lt;span id="head1"&gt;頭が
+                        &lt;span id="red1"&gt;赤い&lt;/span&gt;
+                    &lt;/span&gt;
+                &lt;/span&gt;
+            &lt;/span&gt;
+        &lt;/span&gt;
+    &lt;/div&gt;</pre></code>
+                        </div>
+                    </div>
+                    </div>
+            </div>
+            <div class="Answer" id="Answer1">
+                <div class="HRFEC1">
+                    <img src="picture/HRFEC1.jpg" class="HRFEC画像">
+                    <span id="droppable1-1" class="fish">🐟</span>
+                </div>
+                <div class="HRFEC2">
+                    <img src="picture/HRFEC2.jpg" class="HRFEC画像">
+                    <span id="droppable1-2" class="fish">🐟</span>
+                </div>
+                <div class="HRFEC3">
+                    <img src="picture/HRFEC3.jpg" class="HRFEC画像">
+                    <span id="droppable1-3" class="fish">🐟</span>
+                </div>
+                <div class="HRFEC4">
+                    <img src="picture/HRFEC4.jpg" class="HRFEC画像">
+                    <span id="droppable1-4" class="fish">🐟</span>
+                </div>
+                <div class="HRFEC5">
+                    <img src="picture/HRFEC5.jpg" class="HRFEC画像">
+                    <span id="droppable1-5" class="fish">🐟</span>
+                </div>
+            </div>
         </div>
-        <div class="draggable-container" id="draggable-container1">
-                <span class=darggable id="draggable1" draggable="true">🐈</span>
+        <div class="HRFEC">
+            <div class="Question" id="Question2">問2
+                <span class="Reset" id="ResetButton2">🔄</span> 
+                <span class="HintButton" id="HintButton2">💡</span> 
+                <span class="Sentence">
+                    <span id="head2">頭が
+                        <span id="cat2">猫
+                            <span id="eating2">食べる
+                                <span id="fish2">魚を
+                                    <span id="red2">赤い</span>
+                                </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            </div>
+            <div class="draggable-container" id="draggable-container2">
+                <span class=darggable id="draggable2" draggable="true">🐈</span>
+                <span class=darggableClone id="Clone2">🐈</span>
                 <span class="Judgment">
-                    <span class="circle" id="circle1">⭕</span> 
-                    <span class="cross" id="cross1">❌</span>
-                </span>   
-        </div>
-        <div class="hint" id="hint1">
-            <div class="code-editor">
-                <div class="code-editor-header">hint1</div>
-                <div class="code-editor-content">
-                    <div class="code">
-                        <code><pre>
-&lt;div class="Sentence"&gt;
-    &lt;span id="cat1"&gt;猫
-        &lt;span id="eating1"&gt;食べる       
-            &lt;span id="fish1"&gt;魚を
-                &lt;span id="head1"&gt;頭が
-                    &lt;span id="red1"&gt;赤い&lt;/span&gt;
+                    <span class="circle" id="circle2">⭕</span> 
+                    <span class="cross" id="cross2">❌</span>
+                </span>  
+            </div>
+            <div class="hint" id="hint2">
+                <div class="code-editor">
+                    <div class="code-editor-header">hint2</div>
+                    <div class="code-editor-content">
+                        <div class="code">
+                            <code><pre>
+    &lt;div class="Sentence"&gt;
+        &lt;span id="head2"&gt;頭が                        
+            &lt;span id="cat2"&gt;猫
+                &lt;span id="eating2"&gt;食べる       
+                    &lt;span id="fish2"&gt;魚を
+                        &lt;span id="red2"&gt;赤い&lt;/span&gt;
+                    &lt;/span&gt;
                 &lt;/span&gt;
             &lt;/span&gt;
         &lt;/span&gt;
-    &lt;/span&gt;
-&lt;/div&gt;</pre></code>
+    &lt;/div&gt;</pre></code>
+                        </div>
                     </div>
+                    </div>    
+            </div>
+            <div class="Answer" id="Answer2">
+                <div class="HRFEC1">
+                    <img src="picture/HRFEC1.jpg" class="HRFEC画像">
+                    <span id="droppable2-1" class="fish">🐟</span>
                 </div>
+                <div class="HRFEC2">
+                    <img src="picture/HRFEC2.jpg" class="HRFEC画像">
+                    <span id="droppable2-2" class="fish">🐟</span>
                 </div>
-        </div>
-        <div class="Answer" id="Answer1">
-            <div class="HRFEC1">
-                <img src="picture/HRFEC1.jpg" class="HRFEC画像">
-                <span id="droppable1-1" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC2">
-                <img src="picture/HRFEC2.jpg" class="HRFEC画像">
-                <span id="droppable1-2" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC3">
-                <img src="picture/HRFEC3.jpg" class="HRFEC画像">
-                <span id="droppable1-3" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC4">
-                <img src="picture/HRFEC4.jpg" class="HRFEC画像">
-                <span id="droppable1-4" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC5">
-                <img src="picture/HRFEC5.jpg" class="HRFEC画像">
-                <span id="droppable1-5" class="fish">🐟</span>
+                <div class="HRFEC3">
+                    <img src="picture/HRFEC3.jpg" class="HRFEC画像">
+                    <span id="droppable2-3" class="fish">🐟</span>
+                </div>
+                <div class="HRFEC4">
+                    <img src="picture/HRFEC4.jpg" class="HRFEC画像">
+                    <span id="droppable2-4" class="fish">🐟</span>
+                </div>
+                <div class="HRFEC5">
+                    <img src="picture/HRFEC5.jpg" class="HRFEC画像">
+                    <span id="droppable2-5" class="fish">🐟</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="HRFEC">
-        <div class="Question" id="Question2">問2
-            <span class="Reset" id="ResetButton2">🔄</span> 
-            <span class="HintButton" id="HintButton2">💡</span> 
-            <span class="Sentence">
-                <span id="head2">頭が
-                    <span id="cat2">猫
-                        <span id="eating2">食べる
-                            <span id="fish2">魚を
-                                <span id="red2">赤い</span>
+        <div class="HRFEC">
+            <div class="Question" id="Question3">問3
+                <span class="Reset" id="ResetButton3">🔄</span> 
+                <span class="HintButton" id="HintButton3">💡</span> 
+                <span class="Sentence">
+                    <span id="cat3">猫
+                        <span id="head3">頭が
+                            <span id="red3">赤い</span>
+                        </span>
+                        <span id="eating3">食べる
+                            <span id="fish3">魚を</span>
+                        </span>
+                    </span>
+                </span>
+            </div>
+            <div class="draggable-container" id="draggable-container3">
+                <span class=darggable id="draggable3" draggable="true">🐈</span>
+                <span class=darggableClone id="Clone3">🐈</span>
+                <span class="Judgment">
+                    <span class="circle" id="circle3">⭕</span> 
+                    <span class="cross" id="cross3">❌</span>
+                </span>
+            </div>
+            <div class="hint" id="hint3">
+                <div class="code-editor">
+                    <div class="code-editor-header">hint3</div>
+                    <div class="code-editor-content">
+                        <div class="code">
+                            <code><pre>
+    &lt;div class="Sentence"&gt;
+        &lt;span id="cat3"&gt;猫
+            &lt;span id="head3"&gt;頭が  
+                &lt;span id="red3"&gt;赤い&lt;/span&gt; 
+            &lt;/span&gt;                  
+            &lt;span id="eating3"&gt;食べる       
+                &lt;span id="fish3"&gt;魚を&lt;/span&gt;                
+            &lt;/span&gt;
+        &lt;/span&gt;
+    &lt;/div&gt;</pre></code>                        
+                        </div>
+                    </div>
+                    </div>   
+            </div>
+            <div class="Answer" id="Answer3">
+                <div class="HRFEC1">
+                    <img src="picture/HRFEC1.jpg" class="HRFEC画像">
+                    <span id="droppable3-1" class="fish">🐟</span>
+                </div>
+                <div class="HRFEC2">
+                    <img src="picture/HRFEC2.jpg" class="HRFEC画像">
+                    <span id="droppable3-2" class="fish">🐟</span>
+                </div>
+                <div class="HRFEC3">
+                    <img src="picture/HRFEC3.jpg" class="HRFEC画像">
+                    <span id="droppable3-3" class="fish">🐟</span>
+                </div>
+                <div class="HRFEC4">
+                    <img src="picture/HRFEC4.jpg" class="HRFEC画像">
+                    <span id="droppable3-4" class="fish">🐟</span>
+                </div>
+                <div class="HRFEC5">
+                    <img src="picture/HRFEC5.jpg" class="HRFEC画像">
+                    <span id="droppable3-5" class="fish">🐟</span>
+                </div>
+            </div>
+        </div>
+        <div class="HRFEC">
+            <div class="Question" id="Question4">問4
+                <span class="Reset" id="ResetButton4">🔄</span>
+                <span class="HintButton" id="HintButton4">💡</span>  
+                <span class="Sentence">
+                    <span id="head4">頭が
+                        <span id="red4">赤い</span>
+                        <span id="cat4">猫
+                            <span id="eating4">食べる
+                                <span id="fish4">魚を</span>
                             </span>
                         </span>
                     </span>
                 </span>
-            </span>
-        </div>
-        <div class="draggable-container" id="draggable-container2">
-            <span class=darggable id="draggable2" draggable="true">🐈</span>
-            <span class="Judgment">
-                <span class="circle" id="circle2">⭕</span> 
-                <span class="cross" id="cross2">❌</span>
-            </span>  
-        </div>
-        <div class="hint" id="hint2">
-            <div class="code-editor">
-                <div class="code-editor-header">hint2</div>
-                <div class="code-editor-content">
-                    <div class="code">
-                        <code><pre>
-&lt;div class="Sentence"&gt;
-    &lt;span id="head2"&gt;頭が                        
-        &lt;span id="cat2"&gt;猫
-            &lt;span id="eating2"&gt;食べる       
-                &lt;span id="fish2"&gt;魚を
-                    &lt;span id="red2"&gt;赤い&lt;/span&gt;
+            </div>
+            <div class="draggable-container" id="draggable-container4">
+                <span class=darggable id="draggable4" draggable="true">🐈</span>
+                <span class=darggableClone id="Clone4">🐈</span>
+                <span class="Judgment">
+                    <span class="circle" id="circle4">⭕</span> 
+                    <span class="cross" id="cross4">❌</span>
+                </span>
+            </div>
+            <div class="hint" id="hint4">
+                <div class="code-editor">
+                    <div class="code-editor-header">hint4</div>
+                    <div class="code-editor-content">
+                        <div class="code">
+                            <code><pre>
+    &lt;div class="Sentence"&gt;
+        &lt;span id="head4"&gt;頭が 
+            &lt;span id="red4"&gt;赤い&lt;/span&gt; 
+            &lt;span id="cat4"&gt;猫              
+                &lt;span id="eating4"&gt;食べる       
+                    &lt;span id="fish4"&gt;魚を&lt;/span&gt;                
                 &lt;/span&gt;
             &lt;/span&gt;
         &lt;/span&gt;
-    &lt;/span&gt;
-&lt;/div&gt;</pre></code>
+    &lt;/div&gt;</pre></code>                        
+                        </div>
                     </div>
+                    </div>   
+            </div>       
+            <div class="Answer" id="Answer4">
+                <div class="HRFEC1">
+                    <img src="picture/HRFEC1.jpg" class="HRFEC画像">
+                    <span id="droppable4-1" class="fish">🐟</span>
                 </div>
-                </div>    
-        </div>
-        <div class="Answer" id="Answer2">
-            <div class="HRFEC1">
-                <img src="picture/HRFEC1.jpg" class="HRFEC画像">
-                <span id="droppable2-1" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC2">
-                <img src="picture/HRFEC2.jpg" class="HRFEC画像">
-                <span id="droppable2-2" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC3">
-                <img src="picture/HRFEC3.jpg" class="HRFEC画像">
-                <span id="droppable2-3" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC4">
-                <img src="picture/HRFEC4.jpg" class="HRFEC画像">
-                <span id="droppable2-4" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC5">
-                <img src="picture/HRFEC5.jpg" class="HRFEC画像">
-                <span id="droppable2-5" class="fish">🐟</span>
-            </div>
-        </div>
-    </div>
-    <div class="HRFEC">
-        <div class="Question" id="Question3">問3
-            <span class="Reset" id="ResetButton3">🔄</span> 
-            <span class="HintButton" id="HintButton3">💡</span> 
-            <span class="Sentence">
-                <span id="cat3">猫
-                    <span id="head3">頭が
-                        <span id="red3">赤い</span>
-                    </span>
-                    <span id="eating3">食べる
-                        <span id="fish3">魚を</span>
-                    </span>
-                </span>
-            </span>
-        </div>
-        <div class="draggable-container" id="draggable-container3">
-            <span class=darggable id="draggable3" draggable="true">🐈</span>
-            <span class="Judgment">
-                <span class="circle" id="circle3">⭕</span> 
-                <span class="cross" id="cross3">❌</span>
-            </span>
-        </div>
-        <div class="hint" id="hint3">
-            <div class="code-editor">
-                <div class="code-editor-header">hint3</div>
-                <div class="code-editor-content">
-                    <div class="code">
-                        <code><pre>
-&lt;div class="Sentence"&gt;
-    &lt;span id="cat3"&gt;猫
-        &lt;span id="head3"&gt;頭が  
-            &lt;span id="red3"&gt;赤い&lt;/span&gt; 
-        &lt;/span&gt;                  
-        &lt;span id="eating3"&gt;食べる       
-            &lt;span id="fish3"&gt;魚を&lt;/span&gt;                
-        &lt;/span&gt;
-    &lt;/span&gt;
-&lt;/div&gt;</pre></code>                        
-                    </div>
+                <div class="HRFEC2">
+                    <img src="picture/HRFEC2.jpg" class="HRFEC画像">
+                    <span id="droppable4-2" class="fish">🐟</span>
                 </div>
-                </div>   
-        </div>
-        <div class="Answer" id="Answer3">
-            <div class="HRFEC1">
-                <img src="picture/HRFEC1.jpg" class="HRFEC画像">
-                <span id="droppable3-1" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC2">
-                <img src="picture/HRFEC2.jpg" class="HRFEC画像">
-                <span id="droppable3-2" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC3">
-                <img src="picture/HRFEC3.jpg" class="HRFEC画像">
-                <span id="droppable3-3" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC4">
-                <img src="picture/HRFEC4.jpg" class="HRFEC画像">
-                <span id="droppable3-4" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC5">
-                <img src="picture/HRFEC5.jpg" class="HRFEC画像">
-                <span id="droppable3-5" class="fish">🐟</span>
-            </div>
-        </div>
-    </div>
-    <div class="HRFEC">
-        <div class="Question" id="Question4">問4
-            <span class="Reset" id="ResetButton4">🔄</span>
-            <span class="HintButton" id="HintButton4">💡</span>  
-            <span class="Sentence">
-                <span id="head4">頭が
-                    <span id="red4">赤い</span>
-                    <span id="cat4">猫
-                        <span id="eating4">食べる
-                            <span id="fish4">魚を</span>
-                        </span>
-                    </span>
-                </span>
-            </span>
-        </div>
-        <div class="draggable-container" id="draggable-container4">
-            <span class=darggable id="draggable4" draggable="true">🐈</span>
-            <span class="Judgment">
-                <span class="circle" id="circle4">⭕</span> 
-                <span class="cross" id="cross4">❌</span>
-            </span>
-        </div>
-        <div class="hint" id="hint4">
-            <div class="code-editor">
-                <div class="code-editor-header">hint4</div>
-                <div class="code-editor-content">
-                    <div class="code">
-                        <code><pre>
-&lt;div class="Sentence"&gt;
-    &lt;span id="head4"&gt;頭が 
-        &lt;span id="red4"&gt;赤い&lt;/span&gt; 
-        &lt;span id="cat4"&gt;猫              
-            &lt;span id="eating4"&gt;食べる       
-                &lt;span id="fish4"&gt;魚を&lt;/span&gt;                
-            &lt;/span&gt;
-        &lt;/span&gt;
-    &lt;/span&gt;
-&lt;/div&gt;</pre></code>                        
-                    </div>
+                <div class="HRFEC3">
+                    <img src="picture/HRFEC3.jpg" class="HRFEC画像">
+                    <span id="droppable4-3" class="fish">🐟</span>
                 </div>
-                </div>   
-        </div>       
-        <div class="Answer" id="Answer4">
-            <div class="HRFEC1">
-                <img src="picture/HRFEC1.jpg" class="HRFEC画像">
-                <span id="droppable4-1" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC2">
-                <img src="picture/HRFEC2.jpg" class="HRFEC画像">
-                <span id="droppable4-2" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC3">
-                <img src="picture/HRFEC3.jpg" class="HRFEC画像">
-                <span id="droppable4-3" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC4">
-                <img src="picture/HRFEC4.jpg" class="HRFEC画像">
-                <span id="droppable4-4" class="fish">🐟</span>
-            </div>
-            <div class="HRFEC5">
-                <img src="picture/HRFEC5.jpg" class="HRFEC画像">
-                <span id="droppable4-5" class="fish">🐟</span>
+                <div class="HRFEC4">
+                    <img src="picture/HRFEC4.jpg" class="HRFEC画像">
+                    <span id="droppable4-4" class="fish">🐟</span>
+                </div>
+                <div class="HRFEC5">
+                    <img src="picture/HRFEC5.jpg" class="HRFEC画像">
+                    <span id="droppable4-5" class="fish">🐟</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="HRFEC">
+        <div class="HRFEC">
         <div class="Question" id="Question5">問5
             <span class="Reset" id="ResetButton5">🔄</span> 
             <span class="HintButton" id="HintButton5">💡</span> 
@@ -492,6 +540,7 @@
         </div>
         <div class="draggable-container" id="draggable-container5">
             <span class=darggable id="draggable5" draggable="true">🐈</span>
+            <span class=darggableClone id="Clone5">🐈</span>
             <span class="Judgment">
                 <span class="circle" id="circle5">⭕</span> 
                 <span class="cross" id="cross5">❌</span>
@@ -543,21 +592,23 @@
     </div>
     <script>
 // 定義
+const playSoundPath = 'sound/po.wav';
 const openSoundPath = 'sound/open.mp3';
 const closeSoundPath = 'sound/close.mp3';
 const resetSoundPath = 'sound/reset.mp3';
 const seikaiSoundPath = 'sound/seikai.mp3';
 const hazureSoundPath = 'sound/hazure.mp3';
 const nyanFiles = Array.from({ length: 6 }, (_, i) => `sound/nyan${i + 1}.mp3`);
-const soundPaths = [seikaiSoundPath, hazureSoundPath, resetSoundPath, openSoundPath, closeSoundPath, ...nyanFiles];
-const audioElements = soundPaths.map(path => new Audio(path));
 let dragElementId = "draggable0";
-
-
+const soundPaths = [playSoundPath, seikaiSoundPath, hazureSoundPath, resetSoundPath, openSoundPath, closeSoundPath, ...nyanFiles];
+const audioElements = soundPaths.map(path => new Audio(path));
 
 // ページ読み込み時の処理
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {    
+        // プリロードしたオーディオ要素を保持する
     audioElements.forEach(audio => audio.load());
+
+
 
     for (let i = 1; i <= 5; i++) {
         const draggable = document.getElementById(`draggable${i}`);
@@ -586,30 +637,12 @@ function playSound(soundPath, volume = 0.3) {
     }
 }
 
-
-// ドラッグ開始時の処理
-function dragStart(e) {
-    dragElementId = e.target.id; // グローバルスコープの変数に値を設定
-    console.log(e.target.id);
-
-    // nyanファイルのパスをランダムに選択
-    const randomIndex = Math.floor(Math.random() * nyanFiles.length);
-    const randomNyanFile = nyanFiles[randomIndex];
-
-    // 選択したnyanファイルを再生
-    playSound(randomNyanFile)
-}
-
-// ドラッグオーバー時の処理
-function dragOver(e) {
-    e.preventDefault();
-}
-
-
 // ドラッグアンドドロップのセットアップ関数
 function setupDragAndDrop(draggable, droppables, circle, cross) {
-    draggable.addEventListener('dragstart', dragStart);
-
+    draggable.addEventListener('dragstart', touchStart);
+    draggable.addEventListener('touchstart', touchStart, false);
+    draggable.addEventListener('touchmove', touchMove, false);
+    draggable.addEventListener('touchend', touchEnd, false);
     droppables.forEach(droppable => {
         droppable.addEventListener('dragover', dragOver);
         droppable.addEventListener('drop', (e) => {
@@ -638,14 +671,79 @@ function drop(e, draggable, circle, cross, correctDroppableId) {
     dragElementId = "draggable0";
 }
 
+
+
+// ドラッグアンドドロップ処理
+function touchStart(e) {
+    dragElementId = e.target.id;
+
+    const randomIndex = Math.floor(Math.random() * nyanFiles.length);
+    const randomNyanFile = nyanFiles[randomIndex];
+    playSound(randomNyanFile);
+}
+
+function dragOver(e) {
+    e.preventDefault();}
+
+function touchMove(e) {
+    e.preventDefault();
+    
+    // ドラッグ中のアイテムをカーソルの位置に追従
+    var touch = event.changedTouches[0];
+    event.target.style.position = "fixed";
+    event.target.style.top = (touch.pageY - window.pageYOffset - event.target.offsetHeight / 2) + "px";
+    event.target.style.left = (touch.pageX - window.pageXOffset - event.target.offsetWidth / 2) + "px";
+
+    const draggableNumber = parseInt(dragElementId.match(/\d+/)[0]);
+    const cloneElement = document.getElementById('Clone' + draggableNumber);
+    cloneElement.style.display = "block";
+}
+
+//スマホのドロップ処理
+function touchEnd(e) {
+    const dropzone = document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+    const draggableNumber = parseInt(dragElementId.match(/\d+/)[0]);
+    const droppableNumber = parseInt(dropzone.id.match(/\d+/)[0]);  
+    const correctNumbers = [2, 4, 1, 5, 3];
+    const correctNumber = correctNumbers[draggableNumber - 1];
+    const secondDropzoneId = parseInt(dropzone.id.split('-')[1]);
+
+    if (dropzone && dropzone.classList.contains('fish')) {
+    
+    // ドラッグアンドドロップされた要素の番号とドロップゾーンの番号が一致した場合
+    if (draggableNumber === droppableNumber) {
+        if (secondDropzoneId === correctNumber) {
+            playSound(seikaiSoundPath);
+            document.getElementById(`circle${draggableNumber}`).style.display = 'block';
+            } 
+        else{
+            playSound(hazureSoundPath);
+            document.getElementById(`cross${draggableNumber}`).style.display = 'block';
+
+        }
+        dropzone.appendChild(event.target); 
+        event.target.classList.add('dropped');
+        event.target.removeEventListener('touchmove', touchMove);
+
+        }
+    }
+    // ドラッグ中の操作のために変更していたスタイルを元に戻す
+    event.target.style.position = "";
+    event.target.style.top = "";
+    event.target.style.left = "";
+    const cloneElement = document.getElementById('Clone' + draggableNumber);
+    cloneElement.style.display = "none";
+}
+
+
 // リセットボタンのセットアップ関数
 function setupResetButton(resetButton, draggable, draggable_container,circle, cross) {
     resetButton.addEventListener('click', function() {
 
         draggable.classList.remove('dropped');
-
         draggable_container.appendChild(draggable)
         draggable.setAttribute('draggable', 'true');
+        draggable.addEventListener('touchmove', touchMove, false);
         circle.style.display = 'none';
         cross.style.display = 'none';
         playSound(resetSoundPath)
@@ -667,7 +765,17 @@ function setupHintButton(hint, hintButton) {
     }
   });
 }
-    </script>    
+
+//playボタン
+const playButtonElement = document.getElementById('playButton')
+playButtonElement.addEventListener('click', handleClick)
+
+function handleClick() {
+    document.querySelector('.Questions').style.display = 'block';
+    playButtonElement.removeEventListener('click', handleClick);
+    playSound(playSoundPath)
+  };
+</script> 
 </body>
 <footer>
     <div class="source">元ネタ: 
@@ -688,3 +796,4 @@ function setupHintButton(hint, hintButton) {
 </footer>
 
 </html>
+    
